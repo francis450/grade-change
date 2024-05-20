@@ -25,6 +25,16 @@ $router->get('/register', 'AuthController@register');
 $router->post('/register', 'AuthController@register');
 $router->get('/logout', 'AuthController@logout');
 
+$router->get('/dashboard', 'DashboardController@index');
+$router->get('/dashboard/users', 'DashboardController@users');
+$router->get('/dashboard/courses', 'DashboardController@courses');
+$router->get('/dashboard/departments', 'DashboardController@departments');
+$router->post('/dashboard/departments/store', 'DepartmentController@store');
+$router->get('/dashboard/grades', 'DashboardController@grades');
+$router->get('/dashboard/grade-change-requests', 'DashboardController@gradeChangeRequests');
+$router->get('/dashboard/students', 'DashboardController@students');
+$router->get('/dashboard/notifications', 'DashboardController@notifications');
+
 $router->get('/', 'AuthController@login');
 // Handle the request
 $router->resolve();
