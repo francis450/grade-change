@@ -4,13 +4,17 @@ class BaseController {
     protected $layout = 'layout/main.php';
 
     // Render a view with optional data
-    protected function render($view, $data = []) {
+    protected function render($view, $data = [], $useLayout = true) {
         extract($data);
-        ob_start(); //turn on buffering
-        require $this->viewPath . $view . '.php'; // require the view file
-        $content = ob_get_clean(); //Get current buffer contents and delete current output buffer
+        ob_start(); // Start output buffering
+        require $this->viewPath . $view . '.php';
+        $content = ob_get_clean(); // Get buffered content and clean buffer
 
-        require $this->viewPath . $this->layout;
+        if ($useLayout) {
+            require $this->viewPath . $this->layout;
+        } else {
+            echo $content; // Directly output the content without layout
+        }
     }
 
     // Redirect to a different URL
