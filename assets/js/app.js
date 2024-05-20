@@ -14,7 +14,7 @@ $(document).ready(function () {
       },
       function (data) {
         if (data === "success") {
-          window.location.href = "/"; 
+          window.location.href = "/grade-change/dashboard#";
         } else {
           $(".alert").fadeIn();
           $(".error").html(data);
@@ -24,6 +24,7 @@ $(document).ready(function () {
     );
   });
 
+  // handle register form submit
   $(".register-form").submit(function (event) {
     event.preventDefault();
 
@@ -31,6 +32,7 @@ $(document).ready(function () {
     var email = $("#email").val();
     var password = $("#password").val();
     var confirmPassword = $("#confirm-password").val();
+    // var user_type = $("input[name=user_type]:checked").val();
 
     if (password !== confirmPassword) {
       $(".alert").fadeIn();
@@ -40,21 +42,32 @@ $(document).ready(function () {
     }
 
     $.post(
-      "/grade-change/register",
+      "register",
       {
         fullname: fullname,
         email: email,
         password: password,
+        // user_type: user_type,
       },
       function (data) {
         if (data === "success") {
-          window.location.href = "/login";
+          window.location.href = "/grade-change/";
         } else {
-          $(".alert").fadeIn();
-          $(".error").html(data);
-          $(".alert").fadeOut(2000);
+          // $(".alert").fadeIn();
+          // $(".error").html(data);
+          // $(".alert").fadeOut(2000);
         }
       }
     );
+  });
+
+  // handle logout
+  $(".logout").click(function () {
+    $.get("/grade-change/logout", function (data) {
+      console.log(Request);
+      if (data.success === "success") {
+        window.location.reload();
+      }
+    });
   });
 });
