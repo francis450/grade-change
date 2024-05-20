@@ -3,7 +3,7 @@ class Router {
     protected $request;
     protected $routes = [];
 
-    public function __construct($request) {
+    public function __construct(Request $request) {
         $this->request = $request;
     }
 
@@ -17,13 +17,13 @@ class Router {
 
     public function resolve() {
         $method = $this->request->method();
-        $path = $this->request->path();
+        $path = $this->stripBasePath($this->request->path());
 
         $callback = $this->routes[$method][$path] ?? false;
 
         if (!$callback) {
             http_response_code(404);
-            require_once 'views/errors/404.php';
+            echo "404 Not Found";
             return;
         }
 
@@ -31,10 +31,18 @@ class Router {
             $parts = explode('@', $callback);
             $controller = new $parts[0];
             $method = $parts[1];
-            echo call_user_func_array([$controller, $method], $this->request->params());
+            echo call_user_func_array([$controller, $method], [$this->request->params()]);
         } else {
             echo call_user_func($callback);
         }
+    }
+
+    protected function stripBasePath($path) {
+        $baseDir = dirname($_SERVER['SCRIPT_NAME']);
+        if (strpos($path, $baseDir) === 0) {
+            $path = substr($path, strlen($baseDir));
+        }
+        return $path;
     }
 }
 ?>

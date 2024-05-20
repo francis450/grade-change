@@ -4,7 +4,9 @@ class BaseModel {
     protected $conn;
 
     public function __construct() {
-        $this->conn = Database::getConnection();
+        // get a new database instance
+        $database = new Database();
+        $this->conn = $database->getConnection();
     }
 
     public function create($data) {

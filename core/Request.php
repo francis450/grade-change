@@ -7,10 +7,10 @@ class Request {
     public function path() {
         $path = $_SERVER['REQUEST_URI'] ?? '/';
         $position = strpos($path, '?');
-        if ($position === false) {
-            return $path;
+        if ($position !== false) {
+            $path = substr($path, 0, $position);
         }
-        return substr($path, 0, $position);
+        return $path;
     }
 
     public function params() {

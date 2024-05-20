@@ -6,7 +6,6 @@ class BaseController {
     // Render a view with optional data
     protected function render($view, $data = []) {
         extract($data);
-
         ob_start(); //turn on buffering
         require $this->viewPath . $view . '.php'; // require the view file
         $content = ob_get_clean(); //Get current buffer contents and delete current output buffer
