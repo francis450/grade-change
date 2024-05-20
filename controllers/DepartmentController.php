@@ -35,13 +35,10 @@ class DepartmentController extends BaseController
     public function store($data)
     {
         $departmentModel = new Department();
-        if ($departmentModel->create($data)) {
-            $this->setFlash('Department created successfully');
-            $this->redirect('/departments');
-        } else {
-            $this->setFlash('Failed to create department', 'error');
-            $this->redirect('/departments/create');
-        }
+        $departmentModel->create([
+            'department_name' => $data['department_name'],
+            'department_head_id' => $data['department_head_id']
+        ]);
     }
 
     public function edit($id)
