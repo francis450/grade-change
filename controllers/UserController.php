@@ -1,20 +1,21 @@
 <?php
-require_once 'BaseController.php';
-require_once 'User.php';
 
-class UserController extends BaseController {
-    public function __construct() {
-        // check if the user is authenticated
+class UserController extends BaseController
+{
+    public function __construct()
+    {
         $this->checkAuthentication();
     }
 
-    public function index() {
+    public function index()
+    {
         $userModel = new User();
         $users = $userModel->all();
         $this->render('user/index', ['users' => $users]);
     }
 
-    public function show($id) {
+    public function show($id)
+    {
         $userModel = new User();
         $user = $userModel->read($id);
         if ($user) {
@@ -25,11 +26,13 @@ class UserController extends BaseController {
         }
     }
 
-    public function create() {
+    public function create()
+    {
         $this->render('user/create');
     }
 
-    public function store($data) {
+    public function store($data)
+    {
         $userModel = new User();
         if ($userModel->create($data)) {
             $this->setFlash('User created successfully');
@@ -40,7 +43,8 @@ class UserController extends BaseController {
         }
     }
 
-    public function edit($id) {
+    public function edit($id)
+    {
         $userModel = new User();
         $user = $userModel->read($id);
         if ($user) {
@@ -51,7 +55,8 @@ class UserController extends BaseController {
         }
     }
 
-    public function update($id, $data) {
+    public function update($id, $data)
+    {
         $userModel = new User();
         if ($userModel->update($id, $data)) {
             $this->setFlash('User updated successfully');
@@ -62,7 +67,8 @@ class UserController extends BaseController {
         }
     }
 
-    public function delete($id) {
+    public function delete($id)
+    {
         $userModel = new User();
         if ($userModel->delete($id)) {
             $this->setFlash('User deleted successfully');
@@ -73,4 +79,3 @@ class UserController extends BaseController {
         }
     }
 }
-?>
