@@ -2,9 +2,11 @@
 require_once 'BaseController.php';
 require_once './models/User.php';
 
-class AuthController extends BaseController {
+class AuthController extends BaseController
+{
 
-    public function login() {
+    public function login()
+    {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $email = $_POST['email'];
             $password = $_POST['password'];
@@ -14,48 +16,51 @@ class AuthController extends BaseController {
 
             // Check if the given hash matches the given options.
             if ($user && password_verify($password, $user['password'])) {
-                $_SESSION['user_id'] = $user['id'];
-                $this->setFlash('Login successful');
-                $this->redirect('/dashboard');
+                $_SESSION['user_id'] = $user['user_id'];
+                $_SESSION['user_type'] = $user['type'];
+                $_SESSION['user_name'] = $user['full_name'];
+                echo 'success';
             } else {
-                // return error message without using flash message
                 echo 'Invalid email or password';
             }
         } else {
-            $this->render('auth/login');
+            $data['error'] = 'Invalid email or password';
+            $this->render('auth/login', $data, false);
         }
     }
 
-    public function register() {
+    public function register()
+    {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $fullname = $_POST['fullname'];
             $email = $_POST['email'];
             $password = $_POST['password'];
-
+            $password = trim($password);
+            // $userType = trim($_POST['user_type']);
             $userModel = new User();
             $user = $userModel->findByEmail($email);
 
             if ($user) {
-                // return message without using flash message
                 echo 'Email already exists';
             } else {
                 $userModel->create([
                     'full_name' => $fullname,
                     'email' => $email,
+                    // 'type' => $userType,
                     'password' => password_hash($password, PASSWORD_DEFAULT)
                 ]);
-                
+
                 echo 'success';
             }
         } else {
-            $this->render('auth/register');
+            $this->render('auth/register', [], false);
         }
     }
 
-
-    public function logout() {
+    public function logout()
+    {
         session_destroy();
-        $this->redirect('/login');
+        $this->redirect('login');
+        echo 'success';
     }
 }
-?>
