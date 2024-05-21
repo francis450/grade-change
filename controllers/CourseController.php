@@ -35,12 +35,17 @@ class CourseController extends BaseController
     public function store($data)
     {
         $courseModel = new Course();
-        if ($courseModel->create($data)) {
-            $this->setFlash('Course created successfully');
-            $this->redirect('/courses');
-        } else {
-            $this->setFlash('Failed to create course', 'error');
-            $this->redirect('/courses/create');
+        
+        $courseModel->create([
+            'course_name' => $data['course_name'],
+            'course_code' => $data['course_code'],
+            'department_id' => $data['department_id']
+        ]);
+
+        if($courseModel){
+            echo "success";
+        }else{
+            echo "failed";
         }
     }
 
