@@ -14,7 +14,6 @@ class AuthController extends BaseController
             $userModel = new User();
             $user = $userModel->findByEmail($email);
 
-            // Check if the given hash matches the given options.
             if ($user && password_verify($password, $user['password'])) {
                 $_SESSION['user_id'] = $user['user_id'];
                 $_SESSION['user_type'] = $user['type'];
@@ -60,7 +59,7 @@ class AuthController extends BaseController
     public function logout()
     {
         session_destroy();
-        $this->redirect('login');
+        $this->redirect('/login/');
         echo 'success';
     }
 }

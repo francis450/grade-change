@@ -14,7 +14,7 @@ $(document).ready(function () {
       },
       function (data) {
         if (data === "success") {
-          window.location.href = "/grade-change/dashboard#";
+          window.location.href = "/grade-change/dashboard/";
         } else {
           $(".alert").fadeIn();
           $(".error").html(data);
@@ -165,4 +165,5 @@ $(document).ready(function () {
       }
     );
   });
+
 });
