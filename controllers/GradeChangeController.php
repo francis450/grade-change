@@ -35,12 +35,18 @@ class GradeChangeController extends
     public function store($data)
     {
         $gradeChangeModel = new GradeChange();
-        if ($gradeChangeModel->create($data)) {
-            $this->setFlash('Grade change created successfully');
-            $this->redirect('/grade_changes');
+        
+        $gradeChangeModel = $gradeChangeModel->create([
+            'course_id' => $data['course_id'],
+            'student_id' => $data['student_id'],
+            'points' => $data['points'],
+            'grade' => $data['grade']
+        ]);
+
+        if ($gradeChangeModel) {
+            echo json_encode(['status' => 'success', 'message' => 'Grade change created successfully']);
         } else {
-            $this->setFlash('Failed to create grade change', 'error');
-            $this->redirect('/grade_changes/create');
+            echo json_encode(['status' => 'error', 'message' => 'Failed to create grade change']);
         }
     }
 
