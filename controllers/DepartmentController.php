@@ -4,7 +4,6 @@ class DepartmentController extends BaseController
 {
     public function __construct()
     {
-        // check if the user is authenticated
         $this->checkAuthentication();
     }
 
@@ -18,12 +17,18 @@ class DepartmentController extends BaseController
     public function show($id)
     {
         $departmentModel = new Department();
-        $department = $departmentModel->read($id);
+        $department = $departmentModel->where('department_id', $id['id']);
+        // get the department head
+        $departmentHead = new DepartmentHead();
+
+        $head = $departmentHead->where('department_id', $id['id']);
+        $response = [];
         if ($department) {
-            $this->render('department/show', ['department' => $department]);
+            $response['department'] = $department;
+            $response['head'] = $head;
+            echo json_encode($response);
         } else {
-            $this->setFlash('Department not found', 'error');
-            $this->redirect('/departments');
+            echo 'Department not found';
         }
     }
 
@@ -35,11 +40,45 @@ class DepartmentController extends BaseController
     public function store($data)
     {
         $departmentModel = new Department();
-        $departmentModel->create([
-            'department_name' => $data['department_name'],
-            'department_head_id' => $data['department_head_id']
+
+        $existingDepartment = $departmentModel->where('name', $data['department_name']);
+
+        if ($existingDepartment) {
+            echo 'Department already exists';
+            return;
+        }
+
+        $newDepartmentId = $departmentModel->create([
+            'name' => $data['department_name']
         ]);
+
+        if (isset($data['department_head_id']) && !empty($data['department_head_id'])) {
+            $departmentHead = new DepartmentHead();
+
+            $existingHead = $departmentHead->where('user_id', $data['department_head_id']);
+
+            if ($existingHead) {
+                echo 'User is already a department head for another department';
+                return;
+            }
+
+            $departmentHead->create([
+                'department_id' => $newDepartmentId,
+                'title' => $data['department_name'] . ' Head',
+                'user_id' => $data['department_head_id']
+            ]);
+
+            $user = new User();
+            $user->update('type', $data['department_head_id'], ['type' => 'department_head']);
+        }
+
+        if ($newDepartmentId) {
+            echo 'success';
+        } else {
+            echo 'Error Creating Department';
+        }
     }
+
 
     public function edit($id)
     {
@@ -56,12 +95,10 @@ class DepartmentController extends BaseController
     public function update($id, $data)
     {
         $departmentModel = new Department();
-        if ($departmentModel->update($id, $data)) {
-            $this->setFlash('Department updated successfully');
-            $this->redirect('/departments');
+        if ($departmentModel->update('department_id', $id, $data)) {
+            echo ('Department updated successfully');
         } else {
-            $this->setFlash('Failed to update department', 'error');
-            $this->redirect('/departments');
+            echo ('Failed to update department');
         }
     }
 
@@ -69,12 +106,9 @@ class DepartmentController extends BaseController
     {
         $departmentModel = new Department();
         if ($departmentModel->delete($id)) {
-            $this->setFlash('Department deleted successfully');
+            echo 'success';
         } else {
-            $this->setFlash('Failed to delete department', 'error');
+            echo 'Failed to delete department';
         }
-        $this->redirect('/departments');
     }
-
-    
 }
