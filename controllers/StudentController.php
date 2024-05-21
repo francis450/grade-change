@@ -1,18 +1,22 @@
 <?php
 
-class StudentController extends BaseController {
-    public function __construct() {
+class StudentController extends BaseController
+{
+    public function __construct()
+    {
         // check if the user is authenticated
         $this->checkAuthentication();
     }
 
-    public function index() {
+    public function index()
+    {
         $studentModel = new Student();
         $students = $studentModel->all();
         $this->render('student/index', ['students' => $students]);
     }
 
-    public function show($id) {
+    public function show($id)
+    {
         $studentModel = new Student();
         $student = $studentModel->read($id);
         if ($student) {
@@ -23,22 +27,48 @@ class StudentController extends BaseController {
         }
     }
 
-    public function create() {
+    public function create()
+    {
         $this->render('student/create');
     }
 
-    public function store($data) {
+    public function store($data)
+    {
         $studentModel = new Student();
-        if ($studentModel->create($data)) {
-            $this->setFlash('Student created successfully');
-            $this->redirect('/students');
+        // check if student already exists
+        $student = $studentModel->where('user_id', $data['user_id']);
+        if ($student) {
+            echo 'Student already exists';
+            return;
+        }
+        $department = new Department();
+        $dept = $department->where('department_id', $data['department_id']);
+
+        $departmentAbbreviation = substr($dept[0]['name'], 0, 3);
+        $studentId = strtoupper($departmentAbbreviation) . $data['user_id'];
+
+        $studentModel->create([
+            'user_id' => $data['user_id'],
+            'department_id' => $data['department_id'],
+            'student_number' => $studentId
+        ]);
+
+        $user = new User();
+        $options = array(
+            'type' => 'student'
+        );
+
+        $user->update('user_id', $data['user_id'], $options);
+
+        if ($studentModel && $user) {
+            echo 'success';
         } else {
-            $this->setFlash('Failed to create student', 'error');
-            $this->redirect('/students/create');
+            echo 'failed';
         }
     }
 
-    public function edit($id) {
+    public function edit($id)
+    {
         $studentModel = new Student();
         $student = $studentModel->read($id);
         if ($student) {
@@ -49,7 +79,8 @@ class StudentController extends BaseController {
         }
     }
 
-    public function update($id, $data) {
+    public function update($id, $data)
+    {
         $studentModel = new Student();
         if ($studentModel->update($id, $data)) {
             $this->setFlash('Student updated successfully');
@@ -60,7 +91,8 @@ class StudentController extends BaseController {
         }
     }
 
-    public function delete($id) {
+    public function delete($id)
+    {
         $studentModel = new Student();
         if ($studentModel->delete($id)) {
             $this->setFlash('Student deleted successfully');
