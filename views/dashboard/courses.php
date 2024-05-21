@@ -1,17 +1,19 @@
 <div class="row">
-    <div class="col-12">
+    <div class="col-12" style="max-height: 600px; overflow-y: auto;">
         <div class="d-flex justify-content-between">
             <h3>Courses</h3>
             <button type="button" class="btn btn-primary mb-2" data-toggle="modal" data-target="#addCourseModal">
                 Add Course
             </button>
         </div>
+        
         <table class="table table-striped">
             <thead>
                 <tr>
                     <th scope="col">#</th>
                     <th scope="col">Course Name</th>
                     <th scope="col">Course Code</th>
+                    <th scope="col">Department</th>
                     <th scope="col">Actions</th>
                 </tr>
             </thead>
@@ -23,7 +25,8 @@
                     echo '<th scope="row">' . $i++ . '</th>';
                     echo '<td>' . htmlspecialchars($course['course_name']) . '</td>';
                     echo '<td>' . htmlspecialchars($course['course_code']) . '</td>';
-                    echo '<td><a href="/grade-change/courses/edit/' . $course['id'] . '" class="btn btn-primary">Edit</a> <a href="/grade-change/courses/delete/' . $course['id'] . '" class="btn btn-danger">Delete</a></td>';
+                    echo '<td>' . htmlspecialchars($course['department_name']) . '</td>';
+                    echo '<td><a href="/grade-change/courses/edit/' . $course['course_id'] . '" class="btn btn-primary">Edit</a> <a href="/grade-change/courses/delete/' . $course['course_id'] . '" class="btn btn-danger">Delete</a></td>';
                     echo '</tr>';
                 }
                 ?>
@@ -42,7 +45,7 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <form action="/grade-change/courses/create" method="POST">
+            <form  id="create-course-form">
                 <div class="modal-body">
                     <div class="form-group">
                         <label for="courseName">Course Name</label>
@@ -58,7 +61,7 @@
                             <option value="">Select Department</option>
                             <?php
                             foreach ($departments as $department) {
-                                echo '<option value="' . $department['id'] . '">' . htmlspecialchars($department['department_name']) . '</option>';
+                                echo '<option value="' . $department['department_id'] . '">' . htmlspecialchars($department['name']) . '</option>';
                             }
                             ?>
                         </select>
