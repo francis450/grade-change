@@ -4,7 +4,6 @@ class BaseModel {
     protected $conn;
 
     public function __construct() {
-        // get a new database instance
         $database = new Database();
         $this->conn = $database->getConnection();
     }
@@ -14,7 +13,8 @@ class BaseModel {
         $placeholders = ':' . implode(', :', array_keys($data));
         $sql = "INSERT INTO {$this->table} ($columns) VALUES ($placeholders)";
         $stmt = $this->conn->prepare($sql);
-        return $stmt->execute($data);
+        // return the record created
+        return $stmt->execute($data) ? $this->lastInsertedId() : false;
     }
 
     public function read($id) {
@@ -24,15 +24,16 @@ class BaseModel {
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
-    public function update($id, $data) {
+    public function update($column, $columnValue, $data) {
         $fields = '';
         foreach ($data as $key => $value) {
-            $fields .= "$key = :$key, ";
+            $fields .= $key . ' = :' . $key . ', ';
         }
         $fields = rtrim($fields, ', ');
-        $sql = "UPDATE {$this->table} SET $fields WHERE id = :id";
+        // update the records column by column
+        $sql = "UPDATE {$this->table} SET $fields WHERE $column = :column";
         $stmt = $this->conn->prepare($sql);
-        $data['id'] = $id;
+        $data['column'] = $columnValue;
         return $stmt->execute($data);
     }
 
@@ -49,7 +50,7 @@ class BaseModel {
     }
 
     public function find($id) {
-        $sql = "SELECT * FROM {$this->table} WHERE $this->table.    id = :id";
+        $sql = "SELECT * FROM {$this->table} WHERE $this->table._id = :id";
         $stmt = $this->conn->prepare($sql);
         $stmt->execute(['id' => $id]);
         return $stmt->fetch(PDO::FETCH_ASSOC);
@@ -61,5 +62,10 @@ class BaseModel {
         $stmt->execute(['value' => $value]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+
+    public function lastInsertedId() {
+        return $this->conn->lastInsertId();
+    }
+
 }
 ?>
