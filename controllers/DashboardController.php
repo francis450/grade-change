@@ -33,15 +33,44 @@ class DashboardController extends BaseController
 
     public function departments()
     {
-        $department = new Department();
-        $departments = $department->all();
-        $user = new User();
-        $users = $user->where('type', 'department_head');
-        foreach ($departments as $key => $department) {
-            $departments[$key]['department_head'] = (new User())->find($department['department_head_id'])['name'];
+        // Fetch all departments
+        $departmentModel = new Department();
+        $departments = $departmentModel->all();
+
+        // Fetch all users of a certain type (assuming 'type' is relevant)
+        $userModel = new User();
+        // get all users who are not students
+        $users = $userModel->all();
+        // remove students from the users array and users that exist in the department_head table
+        foreach ($users as $key => $user) {
+            if ($user['type'] == 'student' || $user['type'] == 'admin' || (new DepartmentHead())->where('user_id', $user['user_id'])){
+                unset($users[$key]);
+            }
         }
+
+        // Fetch department heads and map them by department_id
+        $departmentHeadModel = new DepartmentHead();
+        $departmentHeads = $departmentHeadModel->all();
+        $departmentHeadsByDepartment = [];
+        foreach ($departmentHeads as $departmentHead) {
+            $departmentHeadsByDepartment[$departmentHead['department_id']] = $departmentHead;
+        }
+
+        // Enhance departments with department head user information
+        foreach ($departments as $key => $department) {
+            if (isset($departmentHeadsByDepartment[$department['department_id']])) {
+                $headUserId = $departmentHeadsByDepartment[$department['department_id']]['user_id'];
+                $headUser = $userModel->where('user_id',$headUserId);
+                if ($headUser) {
+                    $departments[$key]['department_head'] = $headUser;
+                }
+            }
+        }
+
+        // Render the departments view with the enhanced department data
         $this->render('dashboard/departments', ['departments' => $departments, 'users' => $users]);
     }
+
 
     public function grades()
     {
@@ -108,7 +137,7 @@ class DashboardController extends BaseController
         }
 
         $this->render('dashboard/students', ['students' => $students, 'users' => $users, 'departments' => $departments]);
-    }   
+    }
 
     public function notifications()
     {
@@ -122,6 +151,4 @@ class DashboardController extends BaseController
 
         $this->render('dashboard/notifications', ['notifications' => $notifications]);
     }
-
-    
 }
