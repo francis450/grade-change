@@ -34,8 +34,14 @@ $router->get('/dashboard/grade-change-requests', 'DashboardController@gradeChang
 $router->get('/dashboard/students', 'DashboardController@students');
 $router->get('/dashboard/notifications', 'DashboardController@notifications');
 
+$router->post('/courses/store', 'CourseController@store');
+
 $router->post('/departments/store', 'DepartmentController@store');
 $router->get('/department/show', 'DepartmentController@show');
+
+$router->post('/students/store', 'StudentController@store');
+
+$router->post('/grades/store', 'GradeController@store');
 
 $router->get('/', 'AuthController@login');
 
