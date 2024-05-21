@@ -5,7 +5,7 @@ function generateSidebarLinks($role)
 {
     $links = [
         'common' => [
-            'Dashboard' => '/grade-change/dashboard',
+            'Dashboard' => '/grade-change/dashboard/',
             'Notifications' => '/grade-change/dashboard/notifications',
         ],
         'student' => [
