@@ -141,7 +141,6 @@ $(document).ready(function () {
     var email = $("#email").val();
     var user_type = $("#userType").val();
 
-
     $.post(
       "/grade-change/users/store",
       {
@@ -156,7 +155,6 @@ $(document).ready(function () {
           $(".success").html("User created successfully");
           $(".success").fadeOut(2000);
           // reload
-   
         } else {
           $(".alert").fadeIn();
           $(".error").html(data);
@@ -166,4 +164,119 @@ $(document).ready(function () {
     );
   });
 
+  // function to handle submitting the course create form
+  $("#create-course-form").submit(function (event) {
+    event.preventDefault();
+
+    var courseName = $("#courseName").val();
+    var courseCode = $("#courseCode").val();
+    var departmentId = $("#departmentId").val();
+    $.post(
+      "/grade-change/courses/store",
+      {
+        course_name: courseName,
+        course_code: courseCode,
+        department_id: departmentId,
+      },
+      function (data) {
+        if (data === "success") {
+          $(".alert").show();
+          $(".success").fadeIn();
+          $(".success").html("Course created successfully");
+          $(".success").fadeOut(2000);
+          // reload
+          window.location.reload();
+        } else {
+          $(".alert").fadeIn();
+          $(".error").html(data);
+          $(".alert").fadeOut(2000);
+        }
+      }
+    );
+  });
+
+  // handle submit student form
+  $("#addStudentForm").submit(function (event) {
+    event.preventDefault();
+
+    console.log("submitted");
+
+    var studentUserId = $("#studentName").val();
+    var departmentId = $("#department").val();
+    $.post(
+      "/grade-change/students/store",
+      {
+        user_id: studentUserId,
+        department_id: departmentId,
+      },
+      function (data) {
+        if (data === "success") {
+          $(".alert").show();
+          $(".success").fadeIn();
+          $(".success").html("Student created successfully");
+          $(".success").fadeOut(2000);
+          // reload
+          window.location.reload();
+        } else {
+          $(".alert").show();
+          $(".alert").fadeIn();
+          $(".error").html(data);
+          $(".alert").fadeOut(2000);
+        }
+      }
+    );
+  });
+
+  $('#points').on('change', function() {
+    var points = $(this).val();
+    var grade = '';
+    if (points >= 80) {
+      grade = 'A';
+    } else if (points >= 70) {
+      grade = 'B';
+    } else if (points >= 60) {
+      grade = 'C';
+    } else if (points >= 60) {
+      grade = 'D';
+    } else if (points >= 50) {
+      grade = 'E';
+    } else {
+      grade = 'F';
+    }
+    $('#grade').val(grade);
+  });
+
+  // handle submit grade form
+  $("#addGradeForm").submit(function (event) {
+    event.preventDefault();
+
+    var studentId = $("#studentId").val();
+    var courseId = $("#courseId").val();
+    var grade = $("#grade").val();
+    var points  = $("#points").val();
+    $.post(
+      "/grade-change/grades/store",
+      {
+        student_id: studentId,
+        course_id: courseId,
+        grade: grade,
+        points: points
+      },
+      function (data) {
+        if (data === "success") {
+          $(".alert").show();
+          $(".success").fadeIn();
+          $(".success").html("Grade added successfully");
+          $(".success").fadeOut(2000);
+          // reload
+          window.location.reload();
+        } else {
+          $(".alert").show();
+          $(".alert").fadeIn();
+          $(".error").html(data);
+          $(".alert").fadeOut(2000);
+        }
+      }
+    );
+  });
 });
