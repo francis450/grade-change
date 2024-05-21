@@ -1,6 +1,6 @@
 <?php
 
- class user extends BaseModel
+ class User extends BaseModel
  {
     protected $table = 'users';
 
