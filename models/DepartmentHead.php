@@ -1,6 +1,6 @@
 <?php
 
-class DepartmentHeads extends BaseModel
+class DepartmentHead extends BaseModel
 {
     protected $table = 'department_heads';
 
