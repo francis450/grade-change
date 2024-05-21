@@ -25,30 +25,36 @@ class DashboardController extends BaseController
         $course = new Course();
         $courses = $course->all();
 
+        foreach ($courses as $key => $course) {
+            $courses[$key]['department_name'] =
+                (new Department())->where('department_id', $course['department_id'])[0]['name'];
+        }
+
         $department = new Department();
         $departments = $department->all();
 
-        $this->render('dashboard/courses', ['courses' => $courses], ['departments' => $departments]);
+        $data = [
+            'courses' => $courses,
+            'departments' => $departments
+        ];
+
+        $this->render('dashboard/courses', $data);
     }
+
 
     public function departments()
     {
-        // Fetch all departments
         $departmentModel = new Department();
         $departments = $departmentModel->all();
 
-        // Fetch all users of a certain type (assuming 'type' is relevant)
         $userModel = new User();
-        // get all users who are not students
         $users = $userModel->all();
-        // remove students from the users array and users that exist in the department_head table
         foreach ($users as $key => $user) {
-            if ($user['type'] == 'student' || $user['type'] == 'admin' || (new DepartmentHead())->where('user_id', $user['user_id'])){
+            if ($user['type'] == 'student' || $user['type'] == 'admin' || (new DepartmentHead())->where('user_id', $user['user_id'])) {
                 unset($users[$key]);
             }
         }
 
-        // Fetch department heads and map them by department_id
         $departmentHeadModel = new DepartmentHead();
         $departmentHeads = $departmentHeadModel->all();
         $departmentHeadsByDepartment = [];
@@ -56,18 +62,16 @@ class DashboardController extends BaseController
             $departmentHeadsByDepartment[$departmentHead['department_id']] = $departmentHead;
         }
 
-        // Enhance departments with department head user information
         foreach ($departments as $key => $department) {
             if (isset($departmentHeadsByDepartment[$department['department_id']])) {
                 $headUserId = $departmentHeadsByDepartment[$department['department_id']]['user_id'];
-                $headUser = $userModel->where('user_id',$headUserId);
+                $headUser = $userModel->where('user_id', $headUserId);
                 if ($headUser) {
                     $departments[$key]['department_head'] = $headUser;
                 }
             }
         }
 
-        // Render the departments view with the enhanced department data
         $this->render('dashboard/departments', ['departments' => $departments, 'users' => $users]);
     }
 
@@ -75,23 +79,52 @@ class DashboardController extends BaseController
     public function grades()
     {
         $grade = new Grade();
-        // check if user is a student
+
+        // Check if user is a student
         if ($_SESSION['user_type'] == 'student') {
             $grades = $grade->where('student_id', $_SESSION['user_id']);
         } else {
             $grades = $grade->all();
         }
 
-        // get students who are in the same department as the course
+        $course = new Course();
         $student = new Student();
+        $user = new User();
+
+        // Fetch all courses and students once to avoid multiple queries
+        $courses = $course->all();
         $students = $student->all();
-        foreach ($grades as $key => $grade) {
-            $grades[$key]['student'] = (new Student())->find($grade['student_id'])['name'];
-            $grades[$key]['course'] = (new Course())->find($grade['course_id'])['course_name'];
+        $users = $user->all();
+
+        // Create lookup arrays for courses and students
+        $courseLookup = [];
+        foreach ($courses as $course) {
+            $courseLookup[$course['course_id']] = $course['course_name'];
         }
 
-        $this->render('dashboard/grades', ['grades' => $grades]);
+        $studentLookup = [];
+        foreach ($students as $student) {
+            $userKey = array_search($student['user_id'], array_column($users, 'user_id'));
+            if ($userKey !== false) {
+                $studentLookup[$student['student_id']] = $users[$userKey]['full_name'];
+            }
+        }
+
+        // Add course name and student name to each grade
+        foreach ($grades as $key => $grade) {
+            $grades[$key]['course_name'] = $courseLookup[$grade['course_id']] ?? 'Unknown';
+            $grades[$key]['student_name'] = $studentLookup[$grade['student_id']] ?? 'Unknown';
+        }
+
+        $this->render('dashboard/grades', [
+            'grades' => $grades,
+            'students' => $students,
+            'courses' => $courses
+        ]);
     }
+
+
+
 
     public function gradeChangeRequests()
     {
@@ -123,17 +156,14 @@ class DashboardController extends BaseController
 
         $user = new User();
 
-        // get every user who does not have a type in the users table
-        $users = $user->where('type', null);
+        $users = $user->where('type', 'student');
 
-        // get all departments
         $department = new Department();
         $departments = $department->all();
 
-        // get every user who is a student
         $students = $student->all();
         foreach ($students as $key => $student) {
-            $students[$key]['student_name'] = (new User())->find($student['student_id'])['name'];
+            $students[$key]['student_name'] = (new User())->where('user_id', $student['user_id'])[0]['full_name'];
         }
 
         $this->render('dashboard/students', ['students' => $students, 'users' => $users, 'departments' => $departments]);
