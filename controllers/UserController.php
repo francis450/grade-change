@@ -34,12 +34,17 @@ class UserController extends BaseController
     public function store($data)
     {
         $userModel = new User();
-        if ($userModel->create($data)) {
-            $this->setFlash('User created successfully');
-            $this->redirect('/users');
-        } else {
-            $this->setFlash('Failed to create user', 'error');
-            $this->redirect('/users/create');
+        
+        $userModel->create([
+            'full_name' => $data['full_name'],
+            'email' => $data['email'],
+            'type' => $data['type'],
+        ]);
+
+        if($userModel) {
+            echo 'success';
+        }else{
+            echo 'failed';
         }
     }
 
