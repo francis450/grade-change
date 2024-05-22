@@ -2,7 +2,7 @@
     <div class="col-12" style="max-height: 600px; overflow-y: auto;">
         <div class="d-flex justify-content-between">
             <h3>Courses</h3>
-            <button type="button" class="btn btn-primary mb-2" data-toggle="modal" data-target="#addCourseModal">
+            <button type="button" class="btn btn-primary mb-2 <?php echo $_SESSION['user_type'] == 'student' ? 'd-none' : ''; ?>" data-toggle="modal" data-target="#addCourseModal">
                 Add Course
             </button>
         </div>
