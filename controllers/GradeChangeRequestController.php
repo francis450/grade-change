@@ -1,6 +1,6 @@
 <?php
 
-class GradeChangeController extends BaseController
+class GradeChangeRequestController extends BaseController
 {
     public function __construct()
     {
@@ -34,14 +34,25 @@ class GradeChangeController extends BaseController
 
     public function store($data)
     {
-        $gradeChangeModel = new GradeChange();
-        if ($gradeChangeModel->create($data)) {
-            $this->setFlash('Grade change created successfully');
-            $this->redirect('/grade_changes');
-        } else {
-            $this->setFlash('Failed to create grade change', 'error');
-            $this->redirect('/grade_changes/create');
+        // upload the attachment file if exists
+        $attachment = '';
+        if ($_FILES['attachment']['name']) {
+            $attachment = $this->uploadFile($_FILES['attachment'], 'attachments');
+            $data['attachment'] = $attachment;
         }
+        
+        $gradeChangeModel = new GradeChangeRequest();
+         
+        $studentId = $_SESSION['user_id'];
+
+        $gradeChangeModel->create([
+            'student_id' => $studentId,
+            'course_id' => $data['course_id'],
+            'reason' => $data['reason'],
+            'points' => $data['points'],
+            'status' => 'pending',
+            'attachment' => $attachment ?? '',
+        ]);
     }
 
     public function edit($id)
@@ -141,5 +152,4 @@ class GradeChangeController extends BaseController
         $this->setFlash('All grade changes cancelled successfully');
         $this->redirect('/grade_changes');
     }
-    
 }
