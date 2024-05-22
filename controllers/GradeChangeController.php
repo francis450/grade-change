@@ -44,9 +44,9 @@ class GradeChangeController extends
         ]);
 
         if ($gradeChangeModel) {
-            echo json_encode(['status' => 'success', 'message' => 'Grade change created successfully']);
+            echo  'success';
         } else {
-            echo json_encode(['status' => 'error', 'message' => 'Failed to create grade change']);
+            echo 'error';
         }
     }
 
