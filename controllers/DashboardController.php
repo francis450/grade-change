@@ -137,6 +137,17 @@ class DashboardController extends BaseController
         if ($_SESSION['user_type'] == 'student') {
             $gradeChangeRequests = $gradeChangeRequest->where('student_id', $_SESSION['user_id']);
         }
+
+        // add course name and student name to each grade change request
+        foreach ($gradeChangeRequests as $key => $gradeChangeRequest) {
+            $gradeChangeRequests[$key]['course_name'] = ($course->where('course_id', $gradeChangeRequest['course_id']))[0]['course_name'];
+            $user_id = (new Student())->where('user_id', $gradeChangeRequest['student_id'])[0]['user_id'];
+            $gradeChangeRequests[$key]['student_name'] = (new User())->where('user_id', $user_id)[0]['full_name'];
+            
+            // add grade based on points
+            $gradeChangeRequests[$key]['grade'] = $gradeChangeRequest['points'] >= 75 ? 'A' : ($gradeChangeRequest['points'] >= 65 ? 'B' : ($gradeChangeRequest['points'] >= 55 ? 'C' : ($gradeChangeRequest['points'] >= 45 ? 'D' : 'F')));
+        }
+
         // return an empty if there are no grade change requests
         if (!$gradeChangeRequests) {
             $gradeChangeRequests = [];
