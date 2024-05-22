@@ -27,6 +27,27 @@ class StudentController extends BaseController
         }
     }
 
+    public function course($courseId)
+    {
+        $course = new Course();
+        $students = new Student();
+        $user = new User();
+
+        $course = $course->where('course_id', $courseId['course_id']);
+
+        $departmentId = $course[0]['department_id'];
+        
+        $students = $students->where('department_id', $departmentId);
+
+        $students = array_map(function ($student) use ($user) {
+            $user = $user->where('user_id', $student['user_id']);
+            $student['full_name'] = $user[0]['full_name'];
+            return $student;
+        }, $students);
+
+        echo json_encode($students);
+    }
+
     public function create()
     {
         $this->render('student/create');
