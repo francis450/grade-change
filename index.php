@@ -40,6 +40,7 @@ $router->post('/departments/store', 'DepartmentController@store');
 $router->get('/department/show', 'DepartmentController@show');
 
 $router->post('/students/store', 'StudentController@store');
+$router->get('/students/course', 'StudentController@course');
 
 $router->post('/grades/store', 'GradeController@store');
 
