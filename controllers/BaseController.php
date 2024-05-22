@@ -76,9 +76,7 @@ class BaseController {
             return false;
         // if everything is ok, try to upload file
         } else {
-            echo '<pre>';
-            var_dump($move_uploaded_file($file["tmp_name"], $target_file));
-            echo '</pre>';
+         
             if (move_uploaded_file($file["tmp_name"], $target_file)) {
                 return $target_file;
             } else {
