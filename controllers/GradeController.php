@@ -34,13 +34,19 @@ class GradeController extends BaseController
 
     public function store($data)
     {
-        $gradeModel = new Grade();
-        if ($gradeModel->create($data)) {
-            $this->setFlash('Grade created successfully');
-            $this->redirect('/grades');
+        $grade = new Grade();
+        
+        $grade = $grade->create([
+            'course_id' => $data['course_id'],
+            'student_id' => $data['student_id'],
+            'points' => $data['points'],
+            'grade' => $data['grade']
+        ]);
+
+        if ($grade) {
+            echo 'success';
         } else {
-            $this->setFlash('Failed to create grade', 'error');
-            $this->redirect('/grades/create');
+            echo 'error';
         }
     }
 
