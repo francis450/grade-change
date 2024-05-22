@@ -1,3 +1,11 @@
+<?php
+$user_type = $_SESSION['user_type'] ?? '';
+
+$show_student_name = $user_type != 'student';
+$show_course_name = true;
+$show_grade = true;
+$show_actions = $user_type != 'student';
+?>
 <div class="row">
     <div class="col-12">
         <div class="d-flex justify-content-between">
@@ -11,10 +19,18 @@
             <thead>
                 <tr>
                     <th scope="col">#</th>
-                    <th scope="col">Student Name</th>
-                    <th scope="col">Course Name</th>
-                    <th scope="col">Grade</th>
-                    <th scope="col">Actions</th>
+                    <?php if ($show_student_name) : ?>
+                        <th scope="col">Student Name</th>
+                    <?php endif; ?>
+                    <?php if ($show_course_name) : ?>
+                        <th scope="col">Course Name</th>
+                    <?php endif; ?>
+                    <?php if ($show_grade) : ?>
+                        <th scope="col">Grade</th>
+                    <?php endif; ?>
+                    <?php if ($show_actions) : ?>
+                        <th scope="col">Actions</th>
+                    <?php endif; ?>
                 </tr>
             </thead>
             <tbody>
@@ -60,7 +76,7 @@
                         </select>
                     </div>
                     <div class="mb-3">
-                        <label for="grade" class="form-label">Grade</label>
+                        <label for="grade" class="form-label">Deserved Grade</label>
                         <select class="form-select form-control" id="grade" name="grade" required>
                             <option value="">Select Grade</option>
                             <option value="A">A</option>
@@ -71,8 +87,12 @@
                         </select>
                     </div>
                     <div class="form-group">
+                        <label for="attachment">Attachment</label>
+                        <input type="file" class="form-control border-0" id="attachment" name="attachment" required>
+                    </div>
+                    <div class="form-group">
                         <label for="reason" class="form-label">Reason</label>
-                        <textarea class="form-control" id="reason" name="reason" required></textarea>
+                        <textarea class="form-control" placeholder="Describe why the assigned grade should change" id="reason" name="reason" required></textarea>
                     </div>
                     <div class="modal-footer">
                         <button type="submit" class="btn btn-primary">Add Grade Change Request</button>
