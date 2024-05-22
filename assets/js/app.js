@@ -298,43 +298,60 @@ $(document).ready(function () {
     var grade = $("#grade").val();
     var points = $("#points").val();
     var reason = $("#reason").val();
-    var attachment = $("#attachment");
-    console.log($("#attachment"))
-    $('#attachment')[0]['files']
+    var attachment = $("#attachment")[0];
+    var formData = new FormData();
+    
     if (attachment.files.length > 0) {
-      // Access the first file selected (files[0])
-      var file = attachment.files[0];
+        // Access the first file selected (files[0])
+        var file = attachment.files[0];
 
-      // Log file information
-      console.log("File name:", file.name);
-      console.log("File size:", file.size, "bytes");
-      console.log("File type:", file.type);
+        // Log file information
+        console.log("File name:", file.name);
+        console.log("File size:", file.size, "bytes");
+        console.log("File type:", file.type);
+
+        // Add the file to the form data
+        formData.append("attachment", file);
     }
-    $.post(
-      "/grade-change/grade-change-requests/store",
-      {
-        course_id: courseId,
-        points: points,
-        grade: grade,
-        attachment: attachment,
-        reason: reason,
-      },
-      function (data) {
-        if (data === "success") {
-          $(".alert").show();
-          $(".success").fadeIn();
-          $(".success").html("Grade change request added successfully");
-          $(".success").fadeOut(2000);
-          window.location.reload();
-        } else {
-          $(".alert").show();
-          $(".alert").fadeIn();
-          $(".error").html(data);
-          $(".alert").fadeOut(2000);
+    
+    // Append other form data
+    formData.append("course_id", courseId);
+    formData.append("points", points);
+    formData.append("grade", grade);
+    formData.append("reason", reason);
+
+    console.log('Form data', formData);
+
+    $.ajax({
+        url: "/grade-change/grade-change-requests/store",
+        type: "POST",
+        data: formData,
+        processData: false, 
+        contentType: false,
+        success: function (data) {
+            if (data === "success") {
+                $(".alert").show();
+                $(".success").fadeIn();
+                $(".success").html("Grade change request added successfully");
+                $(".success").fadeOut(2000);
+                window.location.reload();
+            } else {
+                $(".alert").show();
+                $(".alert").fadeIn();
+                $(".error").html(data);
+                $(".alert").fadeOut(2000);
+            }
+        },
+        error: function (jqXHR, error) {
+            console.error('Error submitting form: ', error);
+            $(".alert").show();
+            $(".alert").fadeIn();
+            $(".error").html("An error occurred while submitting the form. Please try again.");
+            $(".alert").fadeOut(2000);
         }
-      }
-    );
-  });
+    });
+});
+
 
   // get students who belong to the same department as the selected course
   $("#courseId").on("change", function () {
