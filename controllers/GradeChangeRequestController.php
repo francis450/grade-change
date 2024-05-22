@@ -53,6 +53,12 @@ class GradeChangeRequestController extends BaseController
             'status' => 'pending',
             'attachment' => $attachment ?? '',
         ]);
+
+        if($gradeChangeModel){
+            echo 'success';
+        }else{
+            echo 'failed';
+        }
     }
 
     public function edit($id)
