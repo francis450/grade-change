@@ -67,22 +67,25 @@ function generateSidebarLinks($role)
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ml-auto">
-                    <li class="nav-item mr-1">
+                <ul class="navbar-nav ml-auto d-none d-sm-flex">
+                    <li class="nav-item mr-1 xs-d-none d-sm-flex">
                         <a class="nav-link btn btn-outline-primary" href="#">Profile</a>
                     </li>
-                    <li class="nav-item">
+                    <li class="nav-item xs-d-none d-sm-flex">
                         <a class="nav-link btn btn-outline-danger logout" href="#">Logout</a>
                     </li>
                 </ul>
+                <div class="list-group d-sm-none">
+                    <?php generateSidebarLinks($_SESSION['user_type']); ?>
+                </div>
             </div>
         </nav>
 
         <!-- Dashboard Content -->
         <div class="row mt-4">
-            <div class="col-md-3">
+            <div class="col-md-3 ">
                 <!-- Sidebar -->
-                <div class="list-group">
+                <div class="list-group d-none d-sm-block">
                     <?php generateSidebarLinks($_SESSION['user_type']); ?>
                 </div>
             </div>
