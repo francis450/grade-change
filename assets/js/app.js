@@ -64,8 +64,7 @@ $(document).ready(function () {
   // handle logout
   $(".logout").click(function () {
     $.get("/grade-change/logout", function (data) {
-      console.log(Request);
-      if (data.success === "success") {
+      if (data === "success") {
         window.location.reload();
       }
     });
