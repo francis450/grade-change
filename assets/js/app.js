@@ -163,7 +163,7 @@ $(document).ready(function () {
     );
   });
 
-  // function to handle submitting the course create form
+  // handle submitting the course create form
   $("#create-course-form").submit(function (event) {
     event.preventDefault();
 
@@ -226,23 +226,34 @@ $(document).ready(function () {
     );
   });
 
-  $('#points').on('change', function() {
+  $("#points").on("change", function () {
     var points = $(this).val();
-    var grade = '';
-    if (points >= 80) {
-      grade = 'A';
-    } else if (points >= 70) {
-      grade = 'B';
-    } else if (points >= 60) {
-      grade = 'C';
-    } else if (points >= 60) {
-      grade = 'D';
-    } else if (points >= 50) {
-      grade = 'E';
-    } else {
-      grade = 'F';
+    var grade = "";
+    if (points > 100) {
+      // remove d-none from the .alert
+      $(".alert").removeClass("d-none");
+      $(".alert").fadeIn();
+      $(".error").html("Invalid points");
+      setTimeout(() => {
+        $("#points").val("");
+        $(".alert").addClass("d-none");
+      }, 5000);
+      return;
+    } else if (points >= 75) {
+      grade = "A";
+    } else if (points >= 65) {
+      grade = "B";
+    } else if (points >= 55) {
+      grade = "C";
+    } else if (points >= 45) {
+      grade = "D";
+    } else if (points >= 39) {
+      grade = "E";
+    } else if (points < 39) {
+      grade = "F";
     }
-    $('#grade').val(grade);
+
+    $("#grade").val(grade);
   });
 
   // handle submit grade form
@@ -252,14 +263,14 @@ $(document).ready(function () {
     var studentId = $("#studentId").val();
     var courseId = $("#courseId").val();
     var grade = $("#grade").val();
-    var points  = $("#points").val();
+    var points = $("#points").val();
     $.post(
       "/grade-change/grades/store",
       {
         student_id: studentId,
         course_id: courseId,
         grade: grade,
-        points: points
+        points: points,
       },
       function (data) {
         if (data === "success") {
@@ -278,18 +289,68 @@ $(document).ready(function () {
       }
     );
   });
-  
+
+  // method="post" action="/grade-change/grade-change-requests/store"
+  $("#addGradeChangeRequestForm").submit(function (event) {
+    event.preventDefault();
+
+    var courseId = $("#course_id").val();
+    var grade = $("#grade").val();
+    var points = $("#points").val();
+    var reason = $("#reason").val();
+    var attachment = $("#attachment");
+    console.log($("#attachment"))
+    $('#attachment')[0]['files']
+    if (attachment.files.length > 0) {
+      // Access the first file selected (files[0])
+      var file = attachment.files[0];
+
+      // Log file information
+      console.log("File name:", file.name);
+      console.log("File size:", file.size, "bytes");
+      console.log("File type:", file.type);
+    }
+    $.post(
+      "/grade-change/grade-change-requests/store",
+      {
+        course_id: courseId,
+        points: points,
+        grade: grade,
+        attachment: attachment,
+        reason: reason,
+      },
+      function (data) {
+        if (data === "success") {
+          $(".alert").show();
+          $(".success").fadeIn();
+          $(".success").html("Grade change request added successfully");
+          $(".success").fadeOut(2000);
+          window.location.reload();
+        } else {
+          $(".alert").show();
+          $(".alert").fadeIn();
+          $(".error").html(data);
+          $(".alert").fadeOut(2000);
+        }
+      }
+    );
+  });
+
   // get students who belong to the same department as the selected course
   $("#courseId").on("change", function () {
     var courseId = $(this).val();
-    $.get("/grade-change/students/course", { course_id: courseId }, function (data) {
-      var students = JSON.parse(data);
-      var options = "<option value=''>Select Student</option>";
-      students.forEach((student) => {
-        options += `<option value="${student.id}">${student.student_number} - ${student.full_name}</option>`;
-      });
-      $("#studentId").html(options);
-    });
+    $.get(
+      "/grade-change/students/course",
+      { course_id: courseId },
+      function (data) {
+        var students = JSON.parse(data);
+        var options = "<option value=''>Select Student</option>";
+        students.forEach((student) => {
+          options += `<option value="${student.id}">${student.student_number} - ${student.full_name}</option>`;
+        });
+        $("#studentId").html(options);
+      }
+    );
   });
 
   // handle any delete button
