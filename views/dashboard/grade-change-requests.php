@@ -2,9 +2,10 @@
     <div class="col-12">
         <div class="d-flex justify-content-between">
             <h3>Grade Change Requests</h3>
-            <button type="button" class="btn btn-primary mb-2" data-toggle="modal" data-target="#addGradeChangeRequestModal">
+            <button type="button" class="btn btn-primary mb-2 <?php echo $_SESSION['user_type'] != 'student' ? 'd-none' : ''; ?>" data-toggle="modal" data-target="#addGradeChangeRequestModal">
                 Add Grade Change Request
             </button>
+
         </div>
         <table class="table table-striped">
             <thead>
