@@ -10,8 +10,8 @@
 </head>
 
 <body>
-    <div class="container register-form">
-        <div class="row justify-content-center">
+    <div class="container register-form"style="height: 100vh">
+        <div class="row justify-content-center align-items-center w-100" style="height: 100vh">
             <div class="col-md-6">
                 <h2 class="mb-4">Register</h2>
                 <form class="register-form">
