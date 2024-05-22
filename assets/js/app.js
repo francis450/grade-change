@@ -279,4 +279,38 @@ $(document).ready(function () {
       }
     );
   });
+  
+  // get students who belong to the same department as the selected course
+  $("#courseId").on("change", function () {
+    var courseId = $(this).val();
+    $.get("/grade-change/students/course", { course_id: courseId }, function (data) {
+      var students = JSON.parse(data);
+      var options = "<option value=''>Select Student</option>";
+      students.forEach((student) => {
+        options += `<option value="${student.id}">${student.student_number} - ${student.full_name}</option>`;
+      });
+      $("#studentId").html(options);
+    });
+  });
+
+  // handle any delete button
+  $(".delete").click(function (e) {
+    e.preventDefault();
+    var id = $(this).closest("tr").data("id");
+    var url = $(this).data("url");
+    var data = { id: id };
+    $.ajax({
+      url: url,
+      method: "DELETE",
+      data: data,
+      success: function (response) {
+        console.log(response);
+        window.location.reload();
+      },
+      error: function (xhr, status, error) {
+        console.error(error);
+        // Handle error
+      },
+    });
+  });
 });
