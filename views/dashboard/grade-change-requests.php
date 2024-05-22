@@ -62,11 +62,11 @@ $show_actions = $user_type != 'student';
                 </button>
             </div>
             <div class="modal-body">
-                <form id="addGradeChangeRequestForm" method="post" action="/grade-change/grade-change-requests/store">
+                <form id="addGradeChangeRequestForm">
                     <div class="mb-3">
                         <label for="courseName" class="form-label">Course Name</label>
                         <!-- select course to apply grade change -->
-                        <select class="form-select form-control" id="courseName" name="course_name" required>
+                        <select class="form-select form-control" id="course_id" name="course_name" required>
                             <option value="">Select Course</option>
                             <?php
                             foreach ($courses as $course) {
@@ -75,10 +75,14 @@ $show_actions = $user_type != 'student';
                             ?>
                         </select>
                     </div>
+                    <div class="form-group">
+                        <label for="points" class="form-label">Deserved Points</label>
+                        <input type="number" class="form-control" id="points" name="points" required>
+                    </div>
                     <div class="mb-3">
                         <label for="grade" class="form-label">Deserved Grade</label>
-                        <select class="form-select form-control" id="grade" name="grade" required>
-                            <option value="">Select Grade</option>
+                        <select class="form-select form-control" id="grade" disabled name="grade" required>
+                            <option value="">Enter Points Above</option>
                             <option value="A">A</option>
                             <option value="B">B</option>
                             <option value="C">C</option>
@@ -88,11 +92,14 @@ $show_actions = $user_type != 'student';
                     </div>
                     <div class="form-group">
                         <label for="attachment">Attachment</label>
-                        <input type="file" class="form-control border-0" id="attachment" name="attachment" required>
+                        <input type="file" class="form-control border-0" id="attachment" name="attachment" accept=".pdf, .doc, .docx, .txt" required>
                     </div>
                     <div class="form-group">
                         <label for="reason" class="form-label">Reason</label>
                         <textarea class="form-control" placeholder="Describe why the assigned grade should change" id="reason" name="reason" required></textarea>
+                    </div>
+                    <div class="alert alert-danger d-none">
+                        <p class="error"></p>
                     </div>
                     <div class="modal-footer">
                         <button type="submit" class="btn btn-primary">Add Grade Change Request</button>
