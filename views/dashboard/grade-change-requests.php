@@ -39,15 +39,26 @@ $show_actions = $user_type != 'student';
                 foreach ($gradeChangeRequests as $gradeChangeRequest) {
                     echo '<tr>';
                     echo '<th scope="row">' . $i++ . '</th>';
-                    echo '<td>' . htmlspecialchars($gradeChangeRequest['student_name']) . '</td>';
-                    echo '<td>' . htmlspecialchars($gradeChangeRequest['course_name']) . '</td>';
-                    echo '<td>' . htmlspecialchars($gradeChangeRequest['grade']) . '</td>';
-                    echo '<td><a href="/grade-change/grade-change-requests/edit/' . $gradeChangeRequest['id'] . '" class="btn btn-primary">Edit</a> <a href="/grade-change/grade-change-requests/delete/' . $gradeChangeRequest['id'] . '" class="btn btn-danger">Delete</a></td>';
+
+                    if ($show_student_name) {
+                        echo '<td>' . htmlspecialchars($gradeChangeRequest['student_name']) . '</td>';
+                    }
+                    if ($show_course_name) {
+                        echo '<td>' . htmlspecialchars($gradeChangeRequest['course_name']) . '</td>';
+                    }
+                    if ($show_grade) {
+                        echo '<td>' . htmlspecialchars($gradeChangeRequest['grade']) . '</td>';
+                    }
+                    if ($show_actions) {
+                        echo '<td><a href="/grade-change/grade-change-requests/edit/' . htmlspecialchars($gradeChangeRequest['request_id']) . '" class="btn btn-primary">Edit</a> <a href="/grade-change/grade-change-requests/delete/' . htmlspecialchars($gradeChangeRequest['request_id']) . '" class="btn btn-danger">Delete</a></td>';
+                    }
+
                     echo '</tr>';
                 }
                 ?>
             </tbody>
         </table>
+
     </div>
 </div>
 
@@ -70,7 +81,7 @@ $show_actions = $user_type != 'student';
                             <option value="">Select Course</option>
                             <?php
                             foreach ($courses as $course) {
-                                echo '<option value="' . $course['id'] . '">' . htmlspecialchars($course['course_name']) . '</option>';
+                                echo '<option value="' . $course['course_id'] . '">' . htmlspecialchars($course['course_name']) . '</option>';
                             }
                             ?>
                         </select>
