@@ -34,11 +34,12 @@
                     }
                     echo '<td>' . htmlspecialchars($grade['points']) . '</td>';
                     echo '<td>' . htmlspecialchars($grade['grade']) . '</td>';
-                    echo '<td><a href="/grade-change/grades/edit/' . $grade['id'] . '" class="btn btn-primary">Edit</a> <a href="/grade-change/grades/delete/' . $grade['id'] . '" class="btn btn-danger">Delete</a></td>';
+                    echo '<td><a href="/grade-change/grades/edit/' . $grade['grade_id'] . '" class="btn btn-primary">Edit</a> <a href="/grade-change/grades/delete/' . $grade['grade_id'] . '" class="btn btn-danger">Delete</a></td>';
                     echo '</tr>';
                 }
                 ?>
             </tbody>
+           
         </table>
     </div>
 </div>
@@ -61,21 +62,21 @@
                             <option value="">Select Course</option>
                             <?php
                             foreach ($courses as $course) {
-                                echo '<option value="' . $course['id'] . '">' . htmlspecialchars($course['course_name']) . '</option>';
+                                echo '<option value="' . $course['course_id'] . '">' . htmlspecialchars($course['course_name']) . '</option>';
                             }
                             ?>
                         </select>
                     </div>
-                    
+
                     <?php if ($_SESSION['user_type'] == 'admin' || $_SESSION['user_type'] == 'department_head') : ?>
                         <div class="form-group">
                             <label for="student">Student</label>
                             <select class="form-control" id="studentId" name="student_id" required>
-                                <option value="">Select Student</option>
-                                <?php
-                                foreach ($students as $student) {
-                                    echo '<option value="' . $student['id'] . '">' . htmlspecialchars($student['student_name']) . '</option>';
-                                }
+                                <!-- <option value="">Select Student</option> -->
+                                <?php                              
+                                    // foreach ($students as $student) {
+                                    //     echo '<option value="' . $student['id'] . '">' . htmlspecialchars($student['student_name']) . '</option>';
+                                    // }
                                 ?>
                             </select>
                         </div>
@@ -84,7 +85,7 @@
                             <input type="hidden" id="student" name="student_id" value="<?php echo $lecturer_student_id; ?>">
                         </div>
                     <?php endif; ?>
-                    
+
                     <div class="form-group">
                         <label for="points">Points</label>
                         <input type="number" class="form-control" min="1" max="100" id="points" name="points" required>
