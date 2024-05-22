@@ -2,7 +2,7 @@
     <div class="col-12">
         <div class="d-flex justify-content-between">
             <h3>Grades</h3>
-            <button type="button" class="btn btn-primary mb-2" data-toggle="modal" data-target="#addGradeModal">
+            <button type="button" class="btn btn-primary mb-2 <?php echo $_SESSION['user_type'] == 'student' ? 'd-none' : ''; ?>" data-toggle="modal" data-target="#addGradeModal">
                 Add Grade
             </button>
         </div>
