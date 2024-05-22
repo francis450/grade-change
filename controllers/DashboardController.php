@@ -79,52 +79,47 @@ class DashboardController extends BaseController
     public function grades()
     {
         $grade = new Grade();
-
-        // Check if user is a student
-        if ($_SESSION['user_type'] == 'student') {
-            $grades = $grade->where('student_id', $_SESSION['user_id']);
-        } else {
-            $grades = $grade->all();
-        }
-
         $course = new Course();
         $student = new Student();
         $user = new User();
 
-        // Fetch all courses and students once to avoid multiple queries
-        $courses = $course->all();
-        $students = $student->all();
-        $users = $user->all();
+        if ($_SESSION['user_type'] == 'student') {
+            $grades = $grade->where('student_id', (new Student())->where('user_id', $_SESSION['user_id'])[0]['id']);
+        
+            $courses = $course->where('department_id', $student->where('user_id',$_SESSION['user_id'])[0]['department_id']);
+            $students = $student->all();
+            $users = $user->all();
 
-        // Create lookup arrays for courses and students
-        $courseLookup = [];
-        foreach ($courses as $course) {
-            $courseLookup[$course['course_id']] = $course['course_name'];
-        }
-
-        $studentLookup = [];
-        foreach ($students as $student) {
-            $userKey = array_search($student['user_id'], array_column($users, 'user_id'));
-            if ($userKey !== false) {
-                $studentLookup[$student['student_id']] = $users[$userKey]['full_name'];
+            foreach ($grades as $key => $grade) {
+                $grades[$key]['course_name'] = ($course->where('course_id', $grade['course_id']))[0]['course_name'];
             }
-        }
 
-        // Add course name and student name to each grade
-        foreach ($grades as $key => $grade) {
-            $grades[$key]['course_name'] = $courseLookup[$grade['course_id']] ?? 'Unknown';
-            $grades[$key]['student_name'] = $studentLookup[$grade['student_id']] ?? 'Unknown';
-        }
+            $this->render('dashboard/grades', [
+                'grades' => $grades,
+                'students' => $students,
+                'courses' => $courses
+            ]);
+        } else {
+            $grades = $grade->all();
 
-        $this->render('dashboard/grades', [
-            'grades' => $grades,
-            'students' => $students,
-            'courses' => $courses
-        ]);
+
+            $courses = $course->all();
+            $students = $student->all();
+            $users = $user->all();
+
+            foreach ($grades as $key => $grade) {
+                $grades[$key]['course_name'] = ($course->where('course_id', $grade['course_id']))[0]['course_name'];
+                $user_id = ($student->where('id', $grade['student_id']))[0]['user_id'];
+                $grades[$key]['student_name'] = ($user->where('user_id', $user_id))[0]['full_name'];
+            }
+
+            $this->render('dashboard/grades', [
+                'grades' => $grades,
+                'students' => $students,
+                'courses' => $courses
+            ]);
+        }
     }
-
-
-
 
     public function gradeChangeRequests()
     {
@@ -134,7 +129,7 @@ class DashboardController extends BaseController
 
         // get all courses for the students department or all courses otherwise
         if ($_SESSION['user_type'] == 'student') {
-            $courses = $course->where('department_id', (new Student())->find($_SESSION['user_id'])['department_id']);
+              $courses = $course->where('department_id', (new Student())->where('user_id',$_SESSION['user_id'])[0]['department_id']);
         } else {
             $courses = $course->all();
         }
