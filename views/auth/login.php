@@ -10,8 +10,8 @@
 </head>
 
 <body>
-    <div class="container">
-        <div class="row justify-content-center">
+    <div class="container" style="height: 100vh">
+        <div class="row justify-content-center align-items-center w-100" style="height: 100vh">
             <div class="col-md-6">
                 <h1 class="text-center">Login</h1>
                 <form class="login-form">
