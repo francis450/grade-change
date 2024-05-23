@@ -1,10 +1,10 @@
 <?php
 $user_type = $_SESSION['user_type'] ?? '';
-
 $show_student_name = $user_type != 'student';
 $show_course_name = true;
 $show_grade = true;
 $show_actions = $user_type != 'student';
+$show_previous_grade = true;
 ?>
 <div class="row">
     <div class="col-12">
@@ -22,8 +22,12 @@ $show_actions = $user_type != 'student';
                     <?php if ($show_student_name) : ?>
                         <th scope="col">Student Name</th>
                     <?php endif; ?>
+                    
                     <?php if ($show_course_name) : ?>
                         <th scope="col">Course Name</th>
+                    <?php endif; ?>
+                    <?php if ($show_previous_grade) : ?>
+                        <th scope="col">Previous Grade</th>
                     <?php endif; ?>
                     <?php if ($show_grade) : ?>
                         <th scope="col">Grade</th>
@@ -36,6 +40,9 @@ $show_actions = $user_type != 'student';
             <tbody>
                 <?php
                 $i = 1;
+                // echo '<pre>';
+                // print_r($gradeChangeRequests);
+                // echo '</pre>';
                 foreach ($gradeChangeRequests as $gradeChangeRequest) {
                     echo '<tr>';
                     echo '<th scope="row">' . $i++ . '</th>';
@@ -43,8 +50,12 @@ $show_actions = $user_type != 'student';
                     if ($show_student_name) {
                         echo '<td>' . htmlspecialchars($gradeChangeRequest['student_name']) . '</td>';
                     }
+                    
                     if ($show_course_name) {
                         echo '<td>' . htmlspecialchars($gradeChangeRequest['course_name']) . '</td>';
+                    }
+                    if ($show_previous_grade) {
+                        echo '<td>' . htmlspecialchars($gradeChangeRequest['previous_grade'][0]['grade']) . '</td>';
                     }
                     if ($show_grade) {
                         echo '<td>' . htmlspecialchars($gradeChangeRequest['grade']) . '</td>';
@@ -103,7 +114,7 @@ $show_actions = $user_type != 'student';
                     </div>
                     <div class="form-group">
                         <label for="attachment">Attachment</label>
-                        <input type="file" class="form-control border-0" id="attachment" name="attachment" accept=".pdf, .doc, .docx, .txt" required>
+                        <input type="file" class="form-control border-0" id="attachment" name="attachment" accept=".pdf, .doc, .docx, .txt">
                     </div>
                     <div class="form-group">
                         <label for="reason" class="form-label">Reason</label>
