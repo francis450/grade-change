@@ -53,12 +53,13 @@ class GradeController extends BaseController
     public function edit($id)
     {
         $gradeModel = new Grade();
-        $grade = $gradeModel->read($id);
+        
+        $grade = $gradeModel->where('grade_id', $id);
+
         if ($grade) {
             $this->render('grade/edit', ['grade' => $grade]);
         } else {
-            $this->setFlash('Grade not found', 'error');
-            $this->redirect('/grades');
+            echo 'Grade not found';
         }
     }
 
