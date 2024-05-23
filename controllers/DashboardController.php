@@ -85,6 +85,7 @@ class DashboardController extends BaseController
         $grade = new Grade();
         $course = new Course();
         $student = new Student();
+        $department = new Department();
         $user = new User();
 
         if ($_SESSION['user_type'] == 'student') {
@@ -105,11 +106,9 @@ class DashboardController extends BaseController
             ]);
         } else {
             $grades = $grade->all();
-
-
+            $departments = $department->all();
             $courses = $course->all();
             $students = $student->all();
-           ;
             $users = $user->all();
 
             foreach ($grades as $key => $grade) {
@@ -121,7 +120,8 @@ class DashboardController extends BaseController
             $this->render('dashboard/grades', [
                 'grades' => $grades,
                 'students' => $students,
-                'courses' => $courses
+                'courses' => $courses,
+                'departments' => $departments,
             ]);
         }
     }
@@ -171,7 +171,14 @@ class DashboardController extends BaseController
         $user = new User();
 
         $users = $user->where('type', 'student');
-
+        
+        // remove students that are already in the students table
+        foreach ($users as $key => $user) {
+            if ($student->where('user_id', $user['user_id'])) {
+                unset($users[$key]);
+            }
+        }
+        
         $department = new Department();
         $departments = $department->all();
 
