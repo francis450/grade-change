@@ -60,15 +60,24 @@ class UserController extends BaseController
         }
     }
 
-    public function update($id, $data)
+    public function update($data)
     {
         $userModel = new User();
-        if ($userModel->update($id, $data)) {
-            $this->setFlash('User updated successfully');
-            $this->redirect('/users');
-        } else {
-            $this->setFlash('Failed to update user', 'error');
-            $this->redirect('/users/edit/' . $id);
+        
+        // find the user by id
+        $user = $userModel->where('user_id', $data['id'])[0];
+        // echo '<pre>';
+        // print_r($userModel->where('user_id', $data['id'])[0]); die();
+        // echo '</pre>';
+        if($user) {
+            $userModel->update('user_id', $data['id'], [
+                'full_name' => $data['full_name'],
+                'email' => $data['email'],
+                'type' => $data['user_type'],
+            ]);
+            echo 'success';
+        }else{
+            echo 'failed';
         }
     }
 
