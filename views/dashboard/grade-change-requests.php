@@ -63,7 +63,7 @@ $show_previous_grade = true;
                     }
                     echo '<td>'.htmlspecialchars($gradeChangeRequest['reason']).'</td>';
                     if ($show_actions) {
-                        echo '<td><a href="/grade-change/grade-change-requests/edit/' . htmlspecialchars($gradeChangeRequest['request_id']) . '" class="btn btn-primary">Edit</a> <a href="/grade-change/grade-change-requests/delete/' . htmlspecialchars($gradeChangeRequest['request_id']) . '" class="btn btn-danger">Delete</a></td>';
+                        echo '<td><a href="/grade-change/grade-change-requests/edit/' . htmlspecialchars($gradeChangeRequest['request_id']) . '" class="btn btn-primary">Approve</a> <a href="/grade-change/grade-change-requests/delete/' . htmlspecialchars($gradeChangeRequest['request_id']) . '" class="btn btn-danger">Deny</a></td>';
                     }
 
                     echo '</tr>';
