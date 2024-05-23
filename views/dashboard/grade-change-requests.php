@@ -30,8 +30,9 @@ $show_previous_grade = true;
                         <th scope="col">Previous Grade</th>
                     <?php endif; ?>
                     <?php if ($show_grade) : ?>
-                        <th scope="col">Grade</th>
+                        <th scope="col">Requested Grade</th>
                     <?php endif; ?>
+                    <th scope="col">Reason</th>
                     <?php if ($show_actions) : ?>
                         <th scope="col">Actions</th>
                     <?php endif; ?>
@@ -60,6 +61,7 @@ $show_previous_grade = true;
                     if ($show_grade) {
                         echo '<td>' . htmlspecialchars($gradeChangeRequest['grade']) . '</td>';
                     }
+                    echo '<td>'.htmlspecialchars($gradeChangeRequest['reason']).'</td>';
                     if ($show_actions) {
                         echo '<td><a href="/grade-change/grade-change-requests/edit/' . htmlspecialchars($gradeChangeRequest['request_id']) . '" class="btn btn-primary">Edit</a> <a href="/grade-change/grade-change-requests/delete/' . htmlspecialchars($gradeChangeRequest['request_id']) . '" class="btn btn-danger">Delete</a></td>';
                     }
