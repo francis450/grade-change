@@ -50,6 +50,7 @@ $router->get('/students/course', 'StudentController@course');
 
 // grades routes
 $router->post('/grades/store', 'GradeController@store');
+$router->get('/grades/edit/{id}', 'GradeController@edit');
 
 // grade change requests routes
 $router->post('/grade-change-requests/store', 'GradeChangeRequestController@store');
