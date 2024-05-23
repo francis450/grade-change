@@ -103,6 +103,8 @@ function generateSidebarLinks($role)
 
     <!-- Custom JS -->
     <script src="../../../grade-change/assets/js/app.js"></script>
+    <script src="../../../grade-change/assets/js/form_submissions.js"></script>
+    <script src="../../../grade-change/assets/js/edit_forms.js"></script>
 </body>
 
 </html>
