@@ -34,7 +34,7 @@ class StudentController extends BaseController
         $user = new User();
 
         $course = $course->where('course_id', $courseId['course_id']);
-
+    
         $departmentId = $course[0]['department_id'];
         
         $students = $students->where('department_id', $departmentId);
