@@ -38,6 +38,7 @@ $router->get('/dashboard/notifications', 'DashboardController@notifications');
 
 // courses routes   
 $router->post('/courses/store', 'CourseController@store');
+$router->get('/courses/department', 'CourseController@department');
 
 // departments routes
 $router->post('/departments/store', 'DepartmentController@store');
