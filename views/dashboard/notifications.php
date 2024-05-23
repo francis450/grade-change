@@ -2,7 +2,7 @@
     <div class="col-12">
         <div class="d-flex justify-content-between">
             <h3>Notifications</h3>
-            <a href="/grade-change/notifications/create" class="btn btn-primary mb-2">Add Notification</a>
+            <!-- <a href="/grade-change/notifications/create" class="btn btn-primary mb-2">Add Notification</a> -->
         </div>
         <table class="table table-striped">
             <thead>
