@@ -8,6 +8,27 @@ class CourseController extends BaseController
         $this->checkAuthentication();
     }
 
+    public function department($data)
+    {
+        $students = new Student;
+        $courses = new Course;
+        
+        $courses = $courses->where('department_id', $data['department_id']);
+        $students = $students->where('department_id', $data['department_id']);
+        
+        // add full name to students
+        foreach ($students as $key => $student) {
+            $students[$key]['full_name'] = (new User)->where('user_id', $student['user_id'])[0]['full_name'];
+        }
+
+        $response = [
+            'courses' => $courses,
+            'students' => $students
+        ];
+        
+        return json_encode($response);
+    }
+
     public function index()
     {
         $courseModel = new Course();
@@ -35,16 +56,16 @@ class CourseController extends BaseController
     public function store($data)
     {
         $courseModel = new Course();
-        
+
         $courseModel->create([
             'course_name' => $data['course_name'],
             'course_code' => $data['course_code'],
             'department_id' => $data['department_id']
         ]);
 
-        if($courseModel){
+        if ($courseModel) {
             echo "success";
-        }else{
+        } else {
             echo "failed";
         }
     }
