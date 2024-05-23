@@ -19,13 +19,14 @@
             <tbody>
                 <?php
                 $i = 1;
+
                 foreach ($users as $user) {
-                    echo '<tr>';
+                    echo '<tr data-id="'.htmlspecialchars($user['user_id']).'" >';
                     echo '<th scope="row">' . $i++ . '</th>';
-                    echo '<td>' . htmlspecialchars($user['full_name']) . '</td>';
-                    echo '<td>' . htmlspecialchars($user['email']) . '</td>';
-                    echo '<td>' . htmlspecialchars($user['type']) . '</td>';
-                    echo '<td><a href="#" class="btn btn-primary">Edit</a> <a href="#" class="btn btn-danger">Delete</a></td>';
+                    echo '<td scope="row" class="full_name">' . htmlspecialchars($user['full_name']) . '</td>';
+                    echo '<td scope="row" class="email">' . htmlspecialchars($user['email']) . '</td>';
+                    echo '<td scope="row" class="userType">' . htmlspecialchars($user['type']) . '</td>';
+                    echo '<td scope="row"><a type="button" class="btn btn-primary edit-user" >Edit</a> <a href="#" class="btn btn-danger">Delete</a></td>';
                     echo '</tr>';
                 }
                 ?>
@@ -75,6 +76,56 @@
 
                     <div class="modal-footer">
                         <button type="submit" class="btn btn-primary">Add User</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Edit user modal -->
+<div class="modal fade" id="editUserModal" tabindex="-1" aria-labelledby="editUserModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editUserModalLabel">Edit User</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="editUserForm">
+                    <div class="mb-3">
+                        <label for="full_name" class="form-label">Full Name</label>
+                        <input type="hidden" id="user_id" name="user_id">
+                        <input type="text" class="form-control" id="full_name" name="full_name" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="email" class="form-label">Email</label>
+                        <input type="email" class="form-control" id="email" name="email" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="userType" class="form-label">Type</label>
+                        <select class="form-select form-control" id="userType" name="type" required>
+                            <option value="">Select Type</option>
+                            <option value="student">Student</option>
+                            <option value="lecturer">Lecturer</option>
+                            <option value="department_head">Department Head</option>
+                            <option value="admin">Admin</option>
+                        </select>
+                    </div>
+
+                    <div class="alert alert-danger d-none" id="editUserError">
+                        <p class="error"></p>
+                    </div>
+
+                    <div class="alert alert-success d-none">
+                        <p class="success"></p>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">Edit User</button>
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                     </div>
                 </form>
