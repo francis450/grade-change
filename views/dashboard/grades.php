@@ -28,7 +28,6 @@
                     echo '<tr>';
                     echo '<th scope="row">' . $i++ . '</th>';
                     echo '<td>' . htmlspecialchars($grade['course_name']) . '</td>';
-                    // Display student column only if the logged-in user is an admin or department head
                     if ($_SESSION['user_type'] == 'admin' || $_SESSION['user_type'] == 'department_head') {
                         echo '<td>' . htmlspecialchars($grade['student_name']) . '</td>';
                     }
@@ -57,14 +56,21 @@
             <form id="addGradeForm">
                 <div class="modal-body">
                     <div class="form-group">
+                        <label for="department">Department</label>
+                        <select class="form-control" id="departmentId" name="department_id" required>
+                            <option value="">Select Department</option>
+                            <?php
+                            foreach ($departments as $department) {
+                                echo '<option value="' . $department['department_id'] . '">' . htmlspecialchars($department['name']) . '</option>';
+                            }
+                            ?>
+                        </select>
+                    </div>
+                    <div class="form-group">
                         <label for="course">Course</label>
                         <select class="form-control" id="courseId" name="course_id" required>
                             <option value="">Select Course</option>
-                            <?php
-                            foreach ($courses as $course) {
-                                echo '<option value="' . $course['course_id'] . '">' . htmlspecialchars($course['course_name']) . '</option>';
-                            }
-                            ?>
+                           
                         </select>
                     </div>
 
@@ -72,12 +78,7 @@
                         <div class="form-group">
                             <label for="student">Student</label>
                             <select class="form-control" id="studentId" name="student_id" required>
-                                <!-- <option value="">Select Student</option> -->
-                                <?php                              
-                                    // foreach ($students as $student) {
-                                    //     echo '<option value="' . $student['id'] . '">' . htmlspecialchars($student['student_name']) . '</option>';
-                                    // }
-                                ?>
+                                <option value="">Select Student</option>
                             </select>
                         </div>
                     <?php elseif ($_SESSION['user_type'] == 'lecturer') : ?>
