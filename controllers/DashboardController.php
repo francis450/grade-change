@@ -147,8 +147,6 @@ class DashboardController extends BaseController
             $courses = $course->all();
         }
 
-
-        // add course name and student name to each grade change request
         foreach ($gradeChangeRequests as $key => $gradeChangeRequest) {
             $gradeChangeRequests[$key]['course_name'] = ($course->where('course_id', $gradeChangeRequest['course_id']))[0]['course_name'];
             $grade_course_id = ($course->where('course_id', $gradeChangeRequest['course_id']))[0]['course_id'];
@@ -159,7 +157,6 @@ class DashboardController extends BaseController
             $gradeChangeRequests[$key]['grade'] = $gradeChangeRequest['points'] >= 75 ? 'A' : ($gradeChangeRequest['points'] >= 65 ? 'B' : ($gradeChangeRequest['points'] >= 55 ? 'C' : ($gradeChangeRequest['points'] >= 45 ? 'D' : 'F')));
         }
 
-        // return an empty if there are no grade change requests
         if (!$gradeChangeRequests) {
             $gradeChangeRequests = [];
         }
