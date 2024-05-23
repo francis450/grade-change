@@ -300,58 +300,59 @@ $(document).ready(function () {
     var reason = $("#reason").val();
     var attachment = $("#attachment")[0];
     var formData = new FormData();
-    
+
     if (attachment.files.length > 0) {
-        // Access the first file selected (files[0])
-        var file = attachment.files[0];
+      // Access the first file selected (files[0])
+      var file = attachment.files[0];
 
-        // Log file information
-        console.log("File name:", file.name);
-        console.log("File size:", file.size, "bytes");
-        console.log("File type:", file.type);
+      // Log file information
+      console.log("File name:", file.name);
+      console.log("File size:", file.size, "bytes");
+      console.log("File type:", file.type);
 
-        // Add the file to the form data
-        formData.append("attachment", file);
+      // Add the file to the form data
+      formData.append("attachment", file);
     }
-    
+
     // Append other form data
     formData.append("course_id", courseId);
     formData.append("points", points);
     formData.append("grade", grade);
     formData.append("reason", reason);
 
-    console.log('Form data', formData);
+    console.log("Form data", formData);
 
     $.ajax({
-        url: "/grade-change/grade-change-requests/store",
-        type: "POST",
-        data: formData,
-        processData: false, 
-        contentType: false,
-        success: function (data) {
-            if (data === "success") {
-                $(".alert").show();
-                $(".success").fadeIn();
-                $(".success").html("Grade change request added successfully");
-                $(".success").fadeOut(2000);
-                window.location.reload();
-            } else {
-                $(".alert").show();
-                $(".alert").fadeIn();
-                $(".error").html(data);
-                $(".alert").fadeOut(2000);
-            }
-        },
-        error: function (jqXHR, error) {
-            console.error('Error submitting form: ', error);
-            $(".alert").show();
-            $(".alert").fadeIn();
-            $(".error").html("An error occurred while submitting the form. Please try again.");
-            $(".alert").fadeOut(2000);
+      url: "/grade-change/grade-change-requests/store",
+      type: "POST",
+      data: formData,
+      processData: false,
+      contentType: false,
+      success: function (data) {
+        if (data === "success") {
+          $(".alert").show();
+          $(".success").fadeIn();
+          $(".success").html("Grade change request added successfully");
+          $(".success").fadeOut(2000);
+          window.location.reload();
+        } else {
+          $(".alert").show();
+          $(".alert").fadeIn();
+          $(".error").html(data);
+          $(".alert").fadeOut(2000);
         }
+      },
+      error: function (jqXHR, error) {
+        console.error("Error submitting form: ", error);
+        $(".alert").show();
+        $(".alert").fadeIn();
+        $(".error").html(
+          "An error occurred while submitting the form. Please try again."
+        );
+        $(".alert").fadeOut(2000);
+      },
     });
-});
-
+  });
 
   // get students who belong to the same department as the selected course
   $("#courseId").on("change", function () {
@@ -389,5 +390,47 @@ $(document).ready(function () {
         // Handle error
       },
     });
+  });
+
+  // handle edit user modal form
+  $('.edit-user').click(function (e) {
+    e.preventDefault();
+
+    var full_name = $(this).closest('tr').find('.full_name').text();
+    var email = $(this).closest('tr').find('.email').text();
+    var user_type = $(this).closest('tr').find('.userType').text();
+    var dataId = $(this).closest('tr').data('id');
+    console.log(full_name, email, user_type, dataId);
+    $('#editUserModal #user_id').val(dataId);
+    $('#editUserModal #full_name').val(full_name);
+    $('#editUserModal #email').val(email);
+    $('#editUserModal #userType').val (user_type);
+    $('#editUserModal').modal('show');
+  })
+
+  // post edit user form
+  $('#editUserForm').submit(function (e) {
+    e.preventDefault();
+    var full_name = $('#editUserModal #full_name').val();
+    var email = $('#editUserModal #email').val();
+    var user_type = $('#editUserModal #userType').val();
+    var id = $('#editUserModal #user_id').val();
+
+    $.post('/grade-change/users/update', {
+      full_name: full_name,
+      email: email,
+      user_type: user_type,
+      id: id
+    }, function (data) {
+      if (data === 'success') {
+        // $('#editUserModal').modal('hide');
+        window.location.reload();
+      } else {
+        // $('#editUserModal').modal('hide');
+        $('.alert').fadeIn();
+        $('.error').html(data);
+        $('.alert').fadeOut(2000);
+      }
+    })
   });
 });
