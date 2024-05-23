@@ -23,24 +23,6 @@ class BaseController {
         exit;
     }
 
-    // Set a flash message (requires session_start() in your app)
-    protected function setFlash($message, $type = 'success') {
-        $_SESSION['flash'] = [
-            'message' => $message,
-            'type' => $type,
-        ];
-    }
-
-    // Get and clear the flash message
-    protected function getFlash() {
-        if (isset($_SESSION['flash'])) {
-            $flash = $_SESSION['flash'];
-            unset($_SESSION['flash']);
-            return $flash;
-        }
-        return null;
-    }
-
     protected function checkAuthentication() {
         if (!isset($_SESSION['user_id'])) {
             $this->redirect('/grade-change/login');
