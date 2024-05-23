@@ -23,8 +23,12 @@ class DashboardController extends BaseController
     public function courses()
     {
         $course = new Course();
-        $courses = $course->all();
-
+        if ($_SESSION['user_type'] == 'student') {
+            $courses = $course->where('department_id', (new Student())->where('user_id', $_SESSION['user_id'])[0]['department_id']);
+        } else {
+            // get all courses if the user is an admin (or any other user type)
+            $courses = $course->all();
+        }
         foreach ($courses as $key => $course) {
             $courses[$key]['department_name'] =
                 (new Department())->where('department_id', $course['department_id'])[0]['name'];
@@ -85,8 +89,8 @@ class DashboardController extends BaseController
 
         if ($_SESSION['user_type'] == 'student') {
             $grades = $grade->where('student_id', (new Student())->where('user_id', $_SESSION['user_id'])[0]['id']);
-        
-            $courses = $course->where('department_id', $student->where('user_id',$_SESSION['user_id'])[0]['department_id']);
+
+            $courses = $course->where('department_id', $student->where('user_id', $_SESSION['user_id'])[0]['department_id']);
             $students = $student->all();
             $users = $user->all();
 
@@ -105,6 +109,7 @@ class DashboardController extends BaseController
 
             $courses = $course->all();
             $students = $student->all();
+           ;
             $users = $user->all();
 
             foreach ($grades as $key => $grade) {
@@ -126,25 +131,31 @@ class DashboardController extends BaseController
         $gradeChangeRequest = new GradeChangeRequest();
         $gradeChangeRequests = $gradeChangeRequest->all();
         $course = new Course();
+        $grade = new Grade();
+        $changeAbleGrades = [];
 
-        // get all courses for the students department or all courses otherwise
         if ($_SESSION['user_type'] == 'student') {
-              $courses = $course->where('department_id', (new Student())->where('user_id',$_SESSION['user_id'])[0]['department_id']);
+            $changeAbleGrades = $grade->where('student_id', (new Student())->where('user_id', $_SESSION['user_id'])[0]['id']);
+            foreach ($changeAbleGrades as $key => $changeAbleGrade) {
+                $changeAbleGrades[$key]['course_name'] = ($course->where('course_id', $changeAbleGrade['course_id']))[0]['course_name'];
+            }
+            // echo '<pre>';
+            // print_r($changeAbleGrades);
+            // echo '</pre>';
+            $gradeChangeRequests = $gradeChangeRequest->where('student_id', (new Student())->where('user_id', $_SESSION['user_id'])[0]['id']);
         } else {
             $courses = $course->all();
         }
 
-        if ($_SESSION['user_type'] == 'student') {
-            $gradeChangeRequests = $gradeChangeRequest->where('student_id', $_SESSION['user_id']);
-        }
 
         // add course name and student name to each grade change request
         foreach ($gradeChangeRequests as $key => $gradeChangeRequest) {
             $gradeChangeRequests[$key]['course_name'] = ($course->where('course_id', $gradeChangeRequest['course_id']))[0]['course_name'];
-            $user_id = (new Student())->where('user_id', $gradeChangeRequest['student_id'])[0]['user_id'];
+            $grade_course_id = ($course->where('course_id', $gradeChangeRequest['course_id']))[0]['course_id'];
+            $courses_grades = $grade->where('course_id', $grade_course_id);
+            $gradeChangeRequests[$key]['previous_grade'] = $grade->where('student_id', $courses_grades[0]['student_id']);
+            $user_id = ((new Student())->where('id', $gradeChangeRequest['student_id']))[0]['user_id'];
             $gradeChangeRequests[$key]['student_name'] = (new User())->where('user_id', $user_id)[0]['full_name'];
-            
-            // add grade based on points
             $gradeChangeRequests[$key]['grade'] = $gradeChangeRequest['points'] >= 75 ? 'A' : ($gradeChangeRequest['points'] >= 65 ? 'B' : ($gradeChangeRequest['points'] >= 55 ? 'C' : ($gradeChangeRequest['points'] >= 45 ? 'D' : 'F')));
         }
 
@@ -152,7 +163,7 @@ class DashboardController extends BaseController
         if (!$gradeChangeRequests) {
             $gradeChangeRequests = [];
         }
-        $this->render('dashboard/grade-change-requests', ['gradeChangeRequests' => $gradeChangeRequests, 'courses' => $courses]);
+        $this->render('dashboard/grade-change-requests', ['gradeChangeRequests' => $gradeChangeRequests, 'courses' => $changeAbleGrades]);
     }
 
     public function students()
