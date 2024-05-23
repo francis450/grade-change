@@ -15,7 +15,7 @@ $router->get('/users/show/{id}', 'UserController@show');
 $router->get('/users/create', 'UserController@create');
 $router->post('/users/store', 'UserController@store');
 $router->get('/users/edit/{id}', 'UserController@edit');
-$router->post('/users/update/{id}', 'UserController@update');
+$router->post('/users/update', 'UserController@update');
 $router->get('/users/delete/{id}', 'UserController@delete');
 
 // Auth routes
