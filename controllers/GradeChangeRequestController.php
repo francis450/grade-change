@@ -36,14 +36,16 @@ class GradeChangeRequestController extends BaseController
     {
         // upload the attachment file if exists
         $attachment = '';
-        if ($_FILES['attachment']['name']) {
+        if (isset($_FILES['attachment']['name'])) {
             $attachment = $this->uploadFile($_FILES['attachment'], 'attachments');
             $data['attachment'] = $attachment;
         }
         
         $gradeChangeModel = new GradeChangeRequest();
-         
-        $studentId = $_SESSION['user_id'];
+        // echo '<pre>';
+        // print_r((new Student())->where('user_id', $_SESSION['user_id'])[0]['id']);
+        // echo '</pre>';
+        $studentId = (new Student())->where('user_id', $_SESSION['user_id'])[0]['id'];
 
         $gradeChangeModel->create([
             'student_id' => $studentId,
