@@ -354,19 +354,29 @@ $(document).ready(function () {
     });
   });
 
-  // get students who belong to the same department as the selected course
-  $("#courseId").on("change", function () {
-    var courseId = $(this).val();
+  // get courses for the selected department
+  $("#departmentId").on("change", function () {
+    var departmentId = $(this).val();
     $.get(
-      "/grade-change/students/course",
-      { course_id: courseId },
+      "/grade-change/courses/department",
+      { department_id: departmentId },
       function (data) {
-        var students = JSON.parse(data);
-        var options = "<option value=''>Select Student</option>";
-        students.forEach((student) => {
-          options += `<option value="${student.id}">${student.student_number} - ${student.full_name}</option>`;
+        var data = JSON.parse(data);
+        var courses = data.courses;
+        var students = data.students;
+        // console.log(courses, students);
+        var courseOptions = "<option value=''>Select Course</option>";
+        courses.forEach((course) => {
+          courseOptions += `<option value="${course.course_id}">${course.course_code} - ${course.course_name}</option>`;
+          $("#courseId").html(courseOptions);
         });
-        $("#studentId").html(options);
+
+        var studentOptions = "<option value=''>Select Student</option>";
+        students.forEach((student) => {
+          studentOptions += `<option value="${student.id}">${student.student_number} - ${student.full_name}</option>`;
+          $("#studentId").html(studentOptions);
+        });
+        
       }
     );
   });
