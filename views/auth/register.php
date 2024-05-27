@@ -10,7 +10,7 @@
 </head>
 
 <body>
-    <div class="container register-form"style="height: 100vh">
+    <div class="container register-form" style="height: 100vh">
         <div class="row justify-content-center align-items-center w-100" style="height: 100vh">
             <div class="col-md-6">
                 <h2 class="mb-4">Register</h2>
@@ -49,6 +49,8 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-<script src="../../../grade-change/assets/js/app.js"></script>
+
+<!-- custom js  -->
+<script src="../../../grade-change/assets/js/form_submissions.js"></script>
 
 </html>
